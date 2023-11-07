@@ -42,7 +42,7 @@ namespace EasyRdf;
  * @copyright  Copyright (c) 2009-2014 Nicholas J Humfrey
  * @license    https://www.opensource.org/licenses/bsd-license.php
  */
-class Literal
+class Literal implements \JsonSerializable
 {
     /** @ignore a mapping from datatype uri to class name */
     private static $datatypeMap = [];
@@ -318,6 +318,20 @@ class Literal
     public function dumpValue($format = 'html', $color = 'black')
     {
         return Utils::dumpLiteralValue($this, $format, $color);
+    }
+
+    /**
+     * Serialize the content to JSON
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            '@type' => $this->datatype,
+            '@language' => $this->lang,
+            '@value' => $this->value,
+        ];
     }
 }
 

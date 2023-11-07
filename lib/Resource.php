@@ -48,7 +48,7 @@ namespace EasyRdf;
  *
  * @see https://phpstan.org/writing-php-code/phpdocs-basics#magic-properties
  */
-class Resource implements \ArrayAccess
+class Resource implements \ArrayAccess, \JsonSerializable
 {
     /** The URI for this resource */
     protected $uri;
@@ -856,5 +856,18 @@ class Resource implements \ArrayAccess
     public function offsetUnset($offset)
     {
         $this->__unset($offset);
+    }
+
+    /**
+     * Serialize the content to JSON
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            '@type' => 'URI',
+            '@value' => $this->uri
+        ];
     }
 }

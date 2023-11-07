@@ -148,19 +148,8 @@ class Turtle extends Serialiser
         $quoted = self::quotedString($value);
 
         if ($datatype = $literal->getDatatypeUri()) {
-            if ('http://www.w3.org/2001/XMLSchema#integer' == $datatype) {
-                return sprintf('%d', $value);
-            } elseif ('http://www.w3.org/2001/XMLSchema#decimal' == $datatype) {
-                return sprintf('%s', $value);
-            } elseif ('http://www.w3.org/2001/XMLSchema#double' == $datatype) {
-                return sprintf('%e', $value);
-            } elseif ('http://www.w3.org/2001/XMLSchema#boolean' == $datatype) {
-                return sprintf('%s', $value);
-            } else {
-                $escaped = $this->serialiseResource($datatype, true);
-
-                return sprintf('%s^^%s', $quoted, $escaped);
-            }
+            $escaped = $this->serialiseResource($datatype, true);
+            return sprintf('%s^^%s', $quoted, $escaped);
         } elseif ($lang = $literal->getLang()) {
             return $quoted.'@'.$lang;
         } else {
