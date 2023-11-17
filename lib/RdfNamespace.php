@@ -90,6 +90,7 @@ class RdfNamespace
         'rss' => 'http://purl.org/rss/1.0/',
         'schema' => 'http://schema.org/',
         'sd' => 'http://www.w3.org/ns/sparql-service-description#',
+        'sh'      => 'http://www.w3.org/ns/shacl#',
         'sioc' => 'http://rdfs.org/sioc/ns#',
         'skos' => 'http://www.w3.org/2004/02/skos/core#',
         'skosxl' => 'http://www.w3.org/2008/05/skos-xl#',
