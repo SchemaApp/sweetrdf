@@ -4,12 +4,6 @@
     "type": "library",
     "keywords": ["RDF", "Semantic Web", "Linked Data", "Turtle", "RDFa", "SPARQL"],
     "license": "BSD-3-Clause",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/SchemaApp/JsonLD.git"
-        }
-    ],
     "authors": [
         {
             "name": "Nicholas Humfrey",
@@ -38,13 +32,13 @@
         "ext-dom" : "*",
         "ext-mbstring": "*",
         "ext-pcre": "*",
-        "schemaapp/json-ld": "dev-master",
         "ext-xmlreader" : "*",
         "lib-libxml" : "*",
         "sweetrdf/rdf-helpers": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
+        "ml/json-ld": "^1.0",
         "phpunit/phpunit": "^9.5.0|^10.0.0",
         "phpstan/phpstan": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
