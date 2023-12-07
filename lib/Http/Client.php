@@ -180,6 +180,21 @@ class Client
     }
 
     /**
+     * Get the Configuration Given a Name.
+     *
+     * @param string $name
+     * @return mixed|null
+     */
+    public function getConfig(string $name)
+    {
+        if (isset($this->config[$name])) {
+            return $this->config[$name];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Set a request header
      *
      * @param string $name  Header name (e.g. 'Accept')
