@@ -430,6 +430,47 @@ class LiteralTest extends TestCase
         $this->assertStringEquals('', $literal->getLang());
     }
 
+    /** START */
+    public function testGetDatatypeMappingNull()
+    {
+        Literal::setDatatypeMapping('ex:mytype', MyDatatypeClass::class);
+        Literal::create('foobar', null, 'ex:mytype');
+
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage(
+            '$datatype should be a string and cannot be null or empty'
+        );
+
+        Literal::getDatatypeMapping(null);
+    }
+
+    public function testGetDatatypeMappingEmpty()
+    {
+        Literal::setDatatypeMapping('ex:mytype', MyDatatypeClass::class);
+        Literal::create('foobar', null, 'ex:mytype');
+
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage(
+            '$datatype should be a string and cannot be null or empty'
+        );
+
+        Literal::getDatatypeMapping('');
+    }
+
+    public function testGetDatatypeMappingNonString()
+    {
+        Literal::setDatatypeMapping('ex:mytype', MyDatatypeClass::class);
+        Literal::create('foobar', null, 'ex:mytype');
+
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage(
+            '$datatype should be a string and cannot be null or empty'
+        );
+
+        Literal::getDatatypeMapping([]);
+    }
+    /** END */
+
     public function testSetDatatypeMappingNull()
     {
         $this->expectException('InvalidArgumentException');
