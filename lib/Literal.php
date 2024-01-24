@@ -147,6 +147,26 @@ class Literal implements \JsonSerializable
         self::$classMap[$class] = $datatype;
     }
 
+    /** Retrieves the PHP class associated with the passed RDF datatype
+     *
+     * Example:
+     * \EasyRdf\Literal::getDatatypeMapping('xsd:date');
+     * returns '\EasyRdf\Literal\Date'
+     *
+     * @param string $datatype The datatype (e.g. xsd:date)
+     * @return string|null The string representation of the PHP class associated with the RDF datatype
+     * @throws \InvalidArgumentException
+     */
+    public static function getDatatypeMapping($datatype)
+    {
+        if (!\is_string($datatype) || (\is_string($datatype) && 0 == \strlen($datatype))) {
+            throw new \InvalidArgumentException('$datatype should be a string and cannot be null or empty');
+        }
+
+        $datatype = RdfNamespace::expand($datatype);
+        return self::$datatypeMap[$datatype] ?? null;
+    }
+
     /** Remove the mapping between an RDF datatype and a PHP class name
      *
      * @param string $datatype The RDF datatype (e.g. xsd:dateTime)
