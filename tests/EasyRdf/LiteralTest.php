@@ -430,7 +430,6 @@ class LiteralTest extends TestCase
         $this->assertStringEquals('', $literal->getLang());
     }
 
-    /** START */
     public function testGetDatatypeMappingNull()
     {
         Literal::setDatatypeMapping('ex:mytype', MyDatatypeClass::class);
@@ -469,7 +468,6 @@ class LiteralTest extends TestCase
 
         Literal::getDatatypeMapping([]);
     }
-    /** END */
 
     public function testSetDatatypeMappingNull()
     {
