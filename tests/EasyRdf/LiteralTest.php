@@ -469,6 +469,15 @@ class LiteralTest extends TestCase
         Literal::getDatatypeMapping([]);
     }
 
+    public function testGetDatatypeMappingNotExists()
+    {
+        Literal::setDatatypeMapping('ex:mytype', MyDatatypeClass::class);
+        Literal::create('foobar', null, 'ex:mytype');
+
+        $result = Literal::getDatatypeMapping('ex:test');
+        $this->assertSame($result, null);
+    }
+
     public function testSetDatatypeMappingNull()
     {
         $this->expectException('InvalidArgumentException');
