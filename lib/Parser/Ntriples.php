@@ -130,40 +130,61 @@ class Ntriples extends Parser
      */
     protected function parseNtriplesObject($obj, $lineNum)
     {
-        if (preg_match('/"(.+)"\^\^<([^<>]+)>/', $obj, $matches)) {
-            return [
-                'type' => 'literal',
-                'value' => $this->unescapeString($matches[1]),
-                'datatype' => $this->unescapeString($matches[2]),
-            ];
-        } elseif (preg_match('/"(.+)"@([\w\-]+)/', $obj, $matches)) {
-            return [
-                'type' => 'literal',
-                'value' => $this->unescapeString($matches[1]),
-                'lang' => $this->unescapeString($matches[2]),
-            ];
-        } elseif (preg_match('/"(.*)"/', $obj, $matches)) {
-            return ['type' => 'literal', 'value' => $this->unescapeString($matches[1])];
-        } elseif (preg_match('/<([^<>]+)>/', $obj, $matches)) {
-            return ['type' => 'uri', 'value' => $this->unescapeString($matches[1])];
-        } elseif (preg_match('/_:([A-Za-z0-9]*)/', $obj, $matches)) {
-            if (empty($matches[1])) {
-                return [
-                    'type' => 'bnode',
-                    'value' => $this->graph->newBNodeId(),
-                ];
-            } else {
-                $nodeid = $this->unescapeString($matches[1]);
+        // Strip trailing dot if present
+        $obj = rtrim($obj, '.');
 
-                return [
-                    'type' => 'bnode',
-                    'value' => $this->remapBnode($nodeid),
-                ];
+        if ($obj[0] !== '"') {
+            // URI or blank node — fall through
+            return $this->parseNonLiteralObject($obj, $lineNum);
+        }
+
+        // Parse literal value character by character to respect escape sequences.
+        // Greedy regexes like /"(.+)"/ break when the value contains \".
+        // We just find the real closing quote — the raw N-Triples content
+        // (with escape sequences intact) is passed to unescapeString which
+        // handles all proper unescaping: \\, \n, \t, \b, \uXXXX, etc.
+        $start = 1; // start after opening "
+        $i = $start;
+        $len = strlen($obj);
+        while ($i < $len) {
+            if ($obj[$i] === '\\' && $i + 1 < $len) {
+                $i += 2; // skip escape sequence
+            } elseif ($obj[$i] === '"') {
+                break; // found the closing quote
+            } else {
+                $i++;
             }
-        } else {
+        }
+
+        if ($i >= $len) {
             throw new Exception("Failed to parse object: $obj", $lineNum);
         }
+
+        $rawValue = substr($obj, $start, $i - $start);
+        $after = substr($obj, $i + 1); // text after closing quote
+
+        // Check for datatype: ^^<iri>
+        if (preg_match('/\^\^<([^<>]+)>/', $after, $dtMatches)) {
+            return [
+                'type' => 'literal',
+                'value' => $this->unescapeString($rawValue),
+                'datatype' => $this->unescapeString($dtMatches[1]),
+            ];
+        }
+
+        // Check for language tag: @lang
+        if (preg_match('/@([\w\-]+)/', $after, $langMatches)) {
+            return [
+                'type' => 'literal',
+                'value' => $this->unescapeString($rawValue),
+                'lang' => $this->unescapeString($langMatches[1]),
+            ];
+        }
+
+        // Plain literal
+        return ['type' => 'literal', 'value' => $this->unescapeString($rawValue)];
     }
+
 
     /**
      * Parse an N-Triples document into an EasyRdf\Graph
